@@ -1,0 +1,245 @@
+:root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --border: #e6e9f0;
+    --text: #1a2233;
+    --muted: #6b7385;
+    --accent: #7b42bc;
+    --green: #1aa260;
+    --amber: #d98a00;
+    --red: #d9342b;
+    --purple: #7b3fe4;
+    --shadow: 0 1px 3px rgba(20, 25, 45, .06), 0 8px 24px rgba(20, 25, 45, .05);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1080px;
+    margin: auto;
+}
+
+/* Header */
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    display: block;
+}
+
+h1 {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: -.01em;
+}
+
+/* Two-line timestamp */
+.generated {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+}
+.gen-date { font-weight: 600; color: var(--text); }
+.gen-time { font-size: 12px; }
+
+/* Status pill */
+.status-pill {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.status-pill.ok    { background: #e3f7ec; color: var(--green); }
+.status-pill.drift { background: #fdf0db; color: var(--amber); }
+
+/* Summary cards */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 36px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.card-value {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.card.has-drift .card-value { color: var(--amber); }
+
+/* Resource panels */
+.resource {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+    overflow: hidden;
+}
+
+.resource-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfe;
+}
+
+.resource-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.resource-type {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+}
+.resource-name {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 4px 9px;
+    border-radius: 6px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.badge.create  { background: #e3f7ec; color: var(--green); }
+.badge.update  { background: #fdf0db; color: var(--amber); }
+.badge.delete  { background: #fde3e1; color: var(--red); }
+.badge.replace { background: #efe7fd; color: var(--purple); }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody td {
+    padding: 11px 20px;
+    border-bottom: 1px solid #f0f2f7;
+    vertical-align: top;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fafbfe; }
+
+.prop {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-weight: 600;
+}
+
+.val {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    display: inline-block;
+    word-break: break-all;
+}
+
+.val.actual   { background: #fde3e1; color: #a32018; }  /* what's live in Azure */
+.val.expected { background: #e3f7ec; color: #137a47; }  /* what Terraform wants  */
+
+/* Empty state */
+.empty {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 56px 24px;
+    text-align: center;
+}
+
+.empty .mark { font-size: 42px; }
+.empty h2 { margin: 14px 0 6px; font-size: 18px; }
+.empty p  { color: var(--muted); margin: 0; }
+
+/* Footer with version */
+.page-foot {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.page-foot .version { font-size: 11px; opacity: .8; }
+
+@media (max-width: 720px) {
+    .summary { grid-template-columns: 1fr; }
+}
