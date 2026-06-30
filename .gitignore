@@ -6,9 +6,12 @@ __pycache__/
 terraform.tfstate
 terraform.tfstate.backup
 *.tfplan
+tfplan
 
 reports/
 
 .vscode/
 
 .env
+
+*.log

@@ -1,14 +1,18 @@
 from detector.terraform_runner import TerraformRunner
 from detector.parser import TerraformPlanParser
 from detector.report import ReportGenerator
+from detector.database import DriftDatabase
+from detector.emailer import EmailSender
 import json
 
 
 def main():
 
+    emailer = EmailSender()
     runner = TerraformRunner()
     parser = TerraformPlanParser()
     report = ReportGenerator()
+    database = DriftDatabase()
 
     print("Initializing Terraform...")
 
@@ -16,6 +20,7 @@ def main():
 
     if init.returncode != 0:
         print(init.stderr)
+        database.close()
         return
 
     print("Running Terraform Plan...")
@@ -24,7 +29,10 @@ def main():
 
     # Exit Code 0 -> No Drift
     if plan.returncode == 0:
+
         print("✅ No drift detected.")
+
+        database.close()
         return
 
     # Exit Code 2 -> Drift Found
@@ -42,7 +50,6 @@ def main():
 
             action = resource["change"]["actions"][0]
 
-            # Ignore unchanged resources
             if action == "no-op":
                 continue
 
@@ -58,7 +65,10 @@ def main():
                 "changes": changes
             })
 
-        # Still print to console for now
+        # ----------------------------
+        # Console Output
+        # ----------------------------
+
         print("\nTerraform Drift Report")
         print("=" * 60)
 
@@ -79,16 +89,38 @@ def main():
 
         print("\n" + "=" * 60)
 
-        # Generate HTML report
-        report_path = report.generate_html(resources)
+        # ----------------------------
+        # Save to SQLite
+        # ----------------------------
 
-        print("\n✅ HTML report generated successfully!")
+        database.save_all(resources)
+
+        print("✅ Drift history saved to SQLite.")
+
+        # ----------------------------
+        # Generate HTML Report
+        # ----------------------------
+
+        report_path = report.generate_html(
+            resources,
+            checked=len(plan["resource_changes"])
+        )
+
+        print("✅ HTML report generated successfully!")
         print(f"📄 Report saved at: {report_path}")
+
+        emailer.send_report(report_path, resources)
+        print("📧 Email sent successfully!")
+
+        database.close()
 
     # Exit Code 1 -> Error
     else:
+
         print("❌ Terraform Error")
         print(plan.stderr)
+
+        database.close()
 
 
 if __name__ == "__main__":
