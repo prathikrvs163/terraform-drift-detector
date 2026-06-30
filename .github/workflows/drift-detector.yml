@@ -51,7 +51,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
         run: python -m detector.detector
 
-        - name: Upload HTML Report
+      - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: terraform-drift-report
