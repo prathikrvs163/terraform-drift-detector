@@ -32,6 +32,10 @@ def main():
 
         print("✅ No drift detected.")
 
+        report_path = report.generate_html([], checked=0)
+
+        print(f"Generated report at {report_path}")
+
         database.close()
         return
 
