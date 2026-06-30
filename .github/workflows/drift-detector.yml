@@ -1,14 +1,12 @@
 name: Terraform Drift Detector
 
 on:
-
   workflow_dispatch:
 
   schedule:
     - cron: "0 3 * * *"
 
 jobs:
-
   drift-detection:
 
     runs-on: ubuntu-latest
@@ -28,6 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -35,4 +40,9 @@ jobs:
         run: terraform version
 
       - name: Run Drift Detector
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
         run: python -m detector.detector
